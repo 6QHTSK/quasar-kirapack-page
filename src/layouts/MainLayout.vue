@@ -130,6 +130,12 @@ export default {
           label: '谱面获取',
           separator: false,
           to: '/bdoff'
+        },
+        {
+          icon: 'calculate',
+          label: 'BPM分析',
+          separator: false,
+          to: '/bpm'
         }
       ]
     }

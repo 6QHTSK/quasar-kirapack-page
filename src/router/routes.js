@@ -38,6 +38,10 @@ const routes = [
         component: () => import('pages/Bestdori.vue')
       },
       {
+        path: 'bpm',
+        component: () => import('pages/Bpmanalysiser.vue')
+      },
+      {
         path: ':id(\\d+)',
         component: () => import('pages/jump.vue')
       }

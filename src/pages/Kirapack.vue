@@ -246,7 +246,7 @@ export default {
   created () {
     var vm = this
     this.$q.loading.show()
-    this.$axios.get('https://api.ayachan.fun/songlist').then(function (res) {
+    this.$axios.get('https://api.ayachan.fun/songList').then(function (res) {
       if (res.status === 200) {
         vm.songlist = res.data
         var dialogopen = {}

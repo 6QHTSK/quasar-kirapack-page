@@ -36,13 +36,9 @@ export default {
     pullbdchart () {
       this.onloading = true
       // const diffstr = ['easy', 'normal', 'hard', 'expert', 'special']
+      const diffconvert = { easy: 0, normal: 1, hard: 2, expert: 3, special: 4 }
       var vm = this
-      var url
-      if (this.bestdoriid > 500) {
-        url = 'https://api.ayachan.fun/bdchart?id=' + this.bestdoriid
-      } else {
-        url = 'https://api.ayachan.fun/bdofftobdfan?id=' + this.bestdoriid + '&diff=' + this.diff
-      }
+      const url = 'https://api.ayachan.fun/ChartNotes?id=' + this.bestdoriid + '&diff=' + diffconvert[this.diff]
       this.$axios.get(url).then(function (res) {
         vm.onloading = false
         if (res.status === 200) {

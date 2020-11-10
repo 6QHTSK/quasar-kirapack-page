@@ -460,7 +460,7 @@ export default {
     pullbdchart () {
       this.$q.loading.show()
       var vm = this
-      var url = 'https://api.ayachan.fun/calcdata'
+      var url = 'https://api.ayachan.fun/calcData'
       this.$axios.get(url).then(function (res) {
         if (res.status === 200) {
           vm.results = res.data
@@ -511,7 +511,7 @@ export default {
     search (username) {
       this.searchload = true
       var vm = this
-      var url = 'https://api.ayachan.fun/calcauthor?author=' + username
+      var url = 'https://api.ayachan.fun/calcAuthor?author=' + username
       this.$axios.get(url).then(function (res) {
         vm.searchload = false
         if (res.status === 200) {
