@@ -33,8 +33,15 @@
       >
         <q-scroll-area class="fit">
           <q-list v-for="(menuItem, index) in menuList" :key="index">
-
-            <q-item clickable :active="menuItem.label === 'Outbox'" v-ripple :to="menuItem.to">
+            <q-item v-if="menuItem.to !== ''" clickable :active="menuItem.label === 'Outbox'" v-ripple :to="menuItem.to">
+              <q-item-section avatar>
+                <q-icon :name="menuItem.icon" />
+              </q-item-section>
+              <q-item-section>
+                {{ menuItem.label }}
+              </q-item-section>
+            </q-item>
+            <q-item v-if="menuItem.to === ''" clickable :active="menuItem.label === 'Outbox'" v-ripple @click="openwebsite(menuItem.href)">
               <q-item-section avatar>
                 <q-icon :name="menuItem.icon" />
               </q-item-section>
@@ -52,7 +59,7 @@
       <router-view />
       <br/>
       <q-dialog v-model="dialoge">
-        <q-card>
+        <q-card style="width: 800px;max-width: 80vw">
         <q-card-section style="text-align:center">
             <h5>本站公告</h5>
             <p>本站主要存放 <a target="_blank" href="https://space.bilibili.com/37434481">稳音绫与6QHTSK </a>
@@ -79,7 +86,7 @@
             <p>If you dont want your illustration or music be shown in this website, </p>
             <p>contact me and I will delete that. </p>
             <h6>版本信息</h6>
-            <p>网站版本:V0.3.1</p>
+            <p>网站版本:V0.4.0</p>
         </q-card-section>
         </q-card>
       </q-dialog>
@@ -135,7 +142,8 @@ export default {
           icon: 'calculate',
           label: 'BPM分析',
           separator: false,
-          to: '/bpm'
+          to: '',
+          href: 'https://mikukonai.com/Tempo/'
         }
       ]
     }
@@ -144,7 +152,7 @@ export default {
     titlename () {
       // console.log(this.$route.path)
       var obj = {
-        '/': '稳音绫的工具站',
+        '/': '彩绫的工具站',
         '/greynotefix': '灰键修复器',
         '/notemover': '谱面位移器',
         '/bdoff': '谱面获取',
@@ -157,6 +165,9 @@ export default {
     },
     ismobile () {
       return this.$q.platform.is.mobile
+    },
+    openwebsite (href) {
+      window.location.href = href
     }
   }
 }

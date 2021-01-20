@@ -1,20 +1,36 @@
   <template>
   <div class="fit column wrap justify-center items-center content-center" style="padding-top:50px">
-    <q-card class="notice" transition-show="jump-down">
-        <q-card-section>
-            <h5>稳音绫的工具站</h5>
-            <p>谱面分享：本人写的优质BanG Dream谱面</p>
-            <p>谱面分析：帮你算BanG Dream谱面的难度</p>
-            <p>Bestdori分析：了解Bestdori自制谱社区的各项有趣数字</p>
-            <p>使用工具：制作自制谱时的得力助手</p>
-            <p>点击左侧导航栏使用工具</p>
-            <p><a href="https://bestdori.ayachan.fun/community/user/psk2019" target="_blank">Bestdori首页</a><br/>
-                <a target="_blank" href="https://space.bilibili.com/37434481">Bilibili首页</a>
-            </p>
-        </q-card-section>
-    </q-card>
-    <span style="padding-top:10px;font-size:xx-small;color:ghostwhite">下次一定把主页做好看来←_←</span>
-    <q-footer elevated>
+    <div class="notice" transition-show="jump-down">
+        <div>
+            <p class="text-h4">彩绫的工具站</p>
+            <p class="text-caption">V0.4.0</p>
+        </div>
+      <q-separator spaced/>
+        <div class="row q-col-gutter-lg justify-evenly" style="width: 100%">
+          <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+              <q-icon name="share" style="font-size: 120px"></q-icon>
+              <p class="text-h6">谱面分享</p>
+              <p class="text-caption">本人写的优质BanG Dream谱面</p>
+          </div>
+          <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <q-icon name="calculate" style="font-size: 120px"></q-icon>
+            <p class="text-h6">谱面分析</p>
+            <p class="text-caption">帮你算BanG Dream谱面的难度</p>
+          </div>
+          <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <q-icon name="bar_chart" style="font-size: 120px"></q-icon>
+            <p class="text-h6">Bestdori分析</p>
+            <p class="text-caption">了解Bestdori自制谱社区的各项数字</p>
+          </div>
+          <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+            <q-icon name="construction" style="font-size: 120px"></q-icon>
+            <p class="text-h6">实用工具</p>
+            <p class="text-caption">帮助制作你的自制谱</p>
+          </div>
+        </div>
+    </div>
+    <span style="padding-top:10px;font-size:xx-small;color:ghostwhite">下次一定把主页做好看来 x 2</span>
+    <q-footer elevated class="gt-lg">
       <q-toolbar class="bg-white">
         <div style="margin:0 auto;">
           <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=45030502000326" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
@@ -35,7 +51,15 @@
 
 <script>
 export default {
-  name: 'PageIndex'
+  name: 'PageIndex',
+  methods: {
+    openMyBestdori () {
+      window.location.href = 'https://bestdori.ayachan.fun/community/user/psk2019'
+    },
+    openMyBiliBili () {
+      window.location.href = 'https://space.bilibili.com/37434481'
+    }
+  }
 }
 </script>
 
