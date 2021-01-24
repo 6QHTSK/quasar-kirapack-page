@@ -3,7 +3,7 @@
     <div class="notice" transition-show="jump-down">
         <div>
             <p class="text-h4">彩绫的工具站</p>
-            <p class="text-caption">V0.4.0</p>
+            <p class="text-caption">V0.4.1</p>
         </div>
       <q-separator spaced/>
         <div class="row q-col-gutter-lg justify-evenly" style="width: 100%">

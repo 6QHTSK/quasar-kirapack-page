@@ -8,7 +8,7 @@
             <q-icon name="search" />
           </template>
         </q-input-->
-        <q-radio dense v-model="sortbyid" :val="true" @pinput="fliter" label="按发表时间排序" />
+        <q-radio dense v-model="sortbyid" :val="true" @input="fliter" label="按发表时间排序" />
         <q-radio dense v-model="sortbyid" :val="false" @input="fliter" label="按最高难度排序" />
         <q-checkbox dense v-model="expanded" label="高级筛选" />
         <q-btn flat dense @click="charter0=true">谱面设计：彩绫 & 6QHTSK</q-btn>
@@ -58,17 +58,18 @@
     <div class="row q-col-gutter-md wrap">
       <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-for="song in flitersonglist" v-bind:key="song.id">
         <q-card style="margin-top: 8px;" class="q-hoverable shadow-transition cursor-pointer shadow-10">
-          <q-img :src="getimagesrc(song.id)" basic @click="opendialog(song.id)">
-            <!--div style="top: 0; left:0; transform: translate(-12px,-12px); background:rgba(0,0,0,0)" class="q-gutter-xs row">
-              <q-avatar size="40px" class="shadow-12" v-if="song.charter === 0 || song.charter === 1"><img src="https://assets.ayachan.fun/charter/0.png"/></q-avatar>
-              <q-avatar size="40px" class="shadow-12" v-if="song.charter === 1 || song.charter === 2"><img src="https://assets.ayachan.fun/charter/2.png"/></q-avatar>
-            </div-->
+          <q-img :src="getimagesrc(song.id)" :ratio="16/9" basic @click="opendialog(song.id)">
             <div class="absolute-full">
             </div>
             <template v-slot:loading>
               <q-spinner-gears color="white" />
             </template>
           </q-img>
+          <div class="absolute-left">
+            <q-chip style="margin: 5px 10px 5px" class="text-weight-bold shadow-6">
+              {{song.id}}
+            </q-chip>
+          </div>
           <div class="absolute-top-right">
             <div style="margin: -16px 10px 5px" class="q-gutter-sm row">
               <q-avatar square size="32px" color="blue" text-color="white" class="shadow-6" v-if="song.diff[0] !== '-1'"><span class="text-caption text-weight-bold">{{song.diff[0]}}</span></q-avatar>
@@ -85,40 +86,15 @@
               </div>
               <div class="text-white text-caption ellipsis" style="margin-right: 15px">{{song.artist}}</div>
           </div>
-          <!--q-card-section>
-              <q-btn
-                fab
-                color="blue"
-                icon="get_app"
-                class="absolute"
-                @click="openkirapack(song.id)"
-                style="top: 0; right: 5px; transform: translateY(-50%);"
-              ><q-tooltip>下载kirapack</q-tooltip>
-              </q-btn>
-              <q-btn
-                fab
-                color="pink"
-                icon="sports_esports"
-                class="absolute"
-                @click="openpbbblink(song.id)"
-                style="top: 0; right: 5px; transform: translate(-110%,-50%);"
-              ><q-tooltip>在BanG Player上游玩</q-tooltip></q-btn>
-              <span>时长:
-              <span
-                v-if="parseInt((song.time-60*Math.floor(song.time/60)).toFixed(0)) >= 10">{{Math.floor(song.time/60)}}:{{(song.time-60*Math.floor(song.time/60)).toFixed(0)}}</span>
-              <span
-                  v-else>{{Math.floor(song.time/60)}}:0{{(song.time-60*Math.floor(song.time/60)).toFixed(0)}}</span>
-              ；BPM:
-              <span
-                v-if="song.bpm[0] === song.bpm[1]">{{song.bpm[0]}}</span>
-              <span
-                v-else>{{song.bpm[0]}}~{{song.bpm[1]}}</span>
-              </span><br/>
-          </q-card-section-->
           <q-dialog v-model='dialogopen[song.id]'>
             <q-card style="width: 500px;max-width: 80vw">
               <div>
-                <q-img :src="getimagesrc(song.id)" @click="opendialog(song.id)"/>
+                <q-img :src="getimagesrc(song.id)" :ratio="16/9" @click="opendialog(song.id)"/>
+                <div class="absolute-left">
+                  <q-chip style="margin: 12px 10px 5px" class="text-weight-bold shadow-6">
+                    {{song.id}}
+                  </q-chip>
+                </div>
                 <div class="absolute-top-right">
                   <div style="margin: 0px 10px 5px" class="q-gutter-sm row">
                     <q-avatar square size="32px" color="blue" text-color="white" class="shadow-6" v-if="song.diff[0] !== '-1'"><span class="text-caption text-weight-bold">{{song.diff[0]}}</span></q-avatar>
@@ -164,7 +140,6 @@
                   </span>
                 </div>
                 <div class="row q-gutter-sm" style="padding-top: 3px">
-                  <q-badge color="grey">{{song.id}}</q-badge>
                   <q-badge color="blue">{{song.tags[0]}}</q-badge>
                   <q-badge v-if="song.diff[0]!=='-1' && song.diff[1]!=='-1' && song.diff[2]!=='-1'" color="green">已完成</q-badge>
                   <q-badge v-if="song.maxDiff >= 28" color="orange">高难度</q-badge>
@@ -332,6 +307,7 @@ export default {
       } else {
         flitersonglist = this.songlist.sort(sortbydiff)
       }
+      console.log(flitersonglist)
       this.flitersonglist = flitersonglist.filter(this.fliterbadge)
       this.$forceUpdate()
     },

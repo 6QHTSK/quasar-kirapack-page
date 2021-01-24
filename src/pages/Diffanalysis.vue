@@ -37,7 +37,7 @@
           </q-btn>
         </template>
       </q-input>
-      <q-input type="textarea" class="full-width" v-model="inputstr" label="bestdori谱面"
+      <q-input type="textarea" class="full-width" v-model.lazy="inputstr" label="bestdori谱面"
                :readonly="onloading || showdetail" outlined v-if="!usingbestdori" style="max-width: 900px">
       </q-input>
       <q-btn color="primary" @click="analysis(false)" class="full-width" :readonly="onloading || showdetail"
@@ -105,7 +105,6 @@
           </div>
         </div>
     </div>
-    <q-separator spaced/>
     <!--div class="row q-gutter-sm justify-evenly" style="padding-top:10px">
       <q-list padding bordered class="rounded-borders" style="width: 400px;">
         <q-expansion-item label="使用说明" default-opened>
@@ -316,7 +315,7 @@ export default {
           vm.onloading = false
         })
       } else {
-        url = 'https://api.ayachan.fun/DiffAnalysis&speed=' + this.speed / 100
+        url = 'https://api.ayachan.fun/DiffAnalysis?speed=' + this.speed / 100
         try {
           var chart = JSON.parse(this.inputstr)
         } catch {

@@ -1,29 +1,26 @@
 <template>
-  <div class="column" style="padding-left:1%;padding-right:1%;padding-top:1%">
-    <div class="q-gutter-sm">
+  <div class="row justify-center">
+    <div class="column q-gutter-sm" style="padding-top:1%;width: 1000px; max-width: 80vw">
       <div>
-          <q-select v-model="accuracystr" :options="options" outlined label="去除精度" style="width:300px">
+          <q-select v-model="accuracystr" :options="options" outlined label="去除精度" style="width:200px">
           </q-select>
       </div>
       <div>
-          <q-input type="textarea" v-model="inputstr" label="转换前bestdori谱面" outlined></q-input>
+          <q-input type="textarea" v-model.lazy="inputstr" label="转换前bestdori谱面" outlined></q-input>
       </div>
       <div>
-          <q-btn :loading="loading" color="primary" @click="fix" class="full-width">修复</q-btn>
-      </div>
-      <div>
-          <q-input type="textarea" v-model="outputstr" label="转换后bestdori谱面" outlined readonly></q-input>
+          <q-btn :loading="loading" color="primary" @click="fix" class="full-width">修复并复制到剪贴板</q-btn>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { copyToClipboard } from 'quasar'
 export default {
   data: function () {
     return {
       accuracystr: '12',
       inputstr: '',
-      outputstr: '',
       loading: false,
       options: [
         {
@@ -52,7 +49,9 @@ export default {
       try {
         inputjson = JSON.parse(this.inputstr)
       } catch (err) {
-        this.$message('谱面错误')
+        this.$q.notify('谱面错误')
+        this.loading = false
+        return
       }
       if (this.accuracystr === '12') {
         accuracy = 12
@@ -69,7 +68,8 @@ export default {
           note.beat = Math.round(note.beat * accuracy) / accuracy
         }
       }
-      this.outputstr = JSON.stringify(inputjson)
+      const vm = this
+      copyToClipboard(JSON.stringify(inputjson)).then(() => { vm.$q.notify('已复制到剪贴版中') }).catch(() => { vm.$q.notify('复制失败') })
       this.loading = false
     }
   }

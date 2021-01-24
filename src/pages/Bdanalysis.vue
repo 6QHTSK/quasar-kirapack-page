@@ -32,7 +32,7 @@
         <q-tab-panels v-model="tab" animated>
             <q-tab-panel name="0">
                 <div class="column q-gutter-sm justify-evenly">
-                    <q-select filled v-model="searchuser" use-input hide-selected fill-input input-debounce="200" :options="options" @filter="filterFn"
+                    <q-select filled v-model="searchuser" use-input hide-selected fill-input input-debounce="200" :options="options" @filter="filterFn" :loading="searchload"
                     style="padding-bottom: 32px" label="谱师名" @input="handleSelect" hint="在此输入需要查询的谱师，并在出现下拉框中选择,如无查询的谱师可能不满足条件未被网站记录">
                         <template v-slot:no-option>
                         <q-item>
@@ -105,7 +105,7 @@
                         </tr>
                         <tr>
                           <td>排名/谱面难度</td>
-                          <td v-if='searchres["highdiffcount"][0] < searchres["lowdiffcount"][0]' style="color:#F56C6C">
+                          <td v-if='searchres["highdiffcount"][0] < searchres["lowdiffcount"][0]' style="color:#f56c6c">
                                 #DESC {{searchres["highdiffcount"][0]}} / {{searchres["highdiffcount"][1].toFixed(2)}}</td>
                           <td v-else style="color:#67C23A">#ASC {{searchres["lowdiffcount"][0]}} / {{searchres["lowdiffcount"][1].toFixed(2)}}</td>
                         </tr>

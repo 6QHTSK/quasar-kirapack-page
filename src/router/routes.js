@@ -34,12 +34,16 @@ const routes = [
         component: () => import('pages/Kirapack.vue')
       },
       {
-        path: 'bestdori',
-        component: () => import('pages/Bestdori.vue')
+        path: 'sonolusUpload',
+        component: () => import('pages/SonolusUpload.vue')
       },
       {
-        path: 'bpm',
-        component: () => import('pages/Bpmanalysiser.vue')
+        path: 'sonolusScript',
+        component: () => import('pages/SonolusScript.vue')
+      },
+      {
+        path: 'search',
+        component: () => import('pages/BestdoriSearch.vue')
       },
       {
         path: ':id(\\d+)',

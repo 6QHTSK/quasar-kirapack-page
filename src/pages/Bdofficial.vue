@@ -1,30 +1,27 @@
 <template>
-  <div class="column" style="padding-left:1%;padding-right:1%;padding-top:1%">
-    <div class="q-gutter-sm">
+  <div class="row justify-center" style="padding-left:1%;padding-right:1%;padding-top:1%">
+    <div class="column q-gutter-sm" style="padding-top:1%;width: 1000px; max-width: 80vw">
         <div class="row q-gutter-sm ">
-          <div style="padding-left=10px"></div>
-          <q-input v-model.number="bestdoriid" type="number" label="Bestdori官谱id" outlined @keyup.enter.native="pullbdchart()" style="width:200px">
+          <q-input v-model.number="bestdoriid" type="number" label="Bestdori官谱id" class="full-width" @keyup.enter.native="pullbdchart()" style="width:200px">
           </q-input>
-          <q-select v-model="diff" :options="options" label="难度" outlined style="width:200px" :disable="bestdoriid >= 500">
+          <q-select v-model="diff" :options="options" label="难度" class="full-width" :disable="bestdoriid >= 500">
           </q-select>
         </div>
       <div>
-        <q-btn :loading="onloading" color="primary" class="full-width" @click="pullbdchart()">拉取</q-btn>
-      </div>
-      <div>
-          <q-input type="textarea" v-model="outputstr" label="bestdori谱面" outlined readonly></q-input>
+        <q-btn :loading="onloading" color="primary" class="full-width" @click="pullbdchart()">拉取并复制到剪贴板</q-btn>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { copyToClipboard } from 'quasar'
+
 export default {
   data: function () {
     return {
       bestdoriid: 1,
       diff: 'expert',
-      outputstr: '',
       onloading: false,
       options: ['easy', 'normal', 'hard', 'expert', 'special']
     }
@@ -43,12 +40,7 @@ export default {
         vm.onloading = false
         if (res.status === 200) {
           if (res.data.result) {
-            if (vm.bestdoriid > 500) {
-              // vm.diff = diffstr[res.data.post.diff]
-              vm.outputstr = JSON.stringify(res.data.data)
-            } else {
-              vm.outputstr = JSON.stringify(res.data.data)
-            }
+            copyToClipboard(JSON.stringify(res.data.data)).then(() => { vm.$q.notify('已复制到剪贴版中') }).catch(() => { vm.$q.notify('复制失败') })
           } else {
             vm.$q.notify({ message: '谱面id/难度输入错误', color: 'negative', position: 'top' })
           }

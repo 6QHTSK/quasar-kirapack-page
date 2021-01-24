@@ -115,10 +115,28 @@ export default {
           to: '/diff'
         },
         {
+          icon: 'search',
+          label: '谱面搜索',
+          separator: false,
+          to: '/search'
+        },
+        {
           icon: 'bar_chart',
           label: 'Bestdori分析',
           separator: true,
           to: '/bdany'
+        },
+        {
+          icon: 'cloud_upload',
+          label: 'Sonolus谱面测试',
+          separator: false,
+          to: '/sonolusUpload'
+        },
+        {
+          icon: 'sync',
+          label: 'Sonolus谱面转换',
+          separator: true,
+          to: '/sonolusScript'
         },
         {
           icon: 'construction',
@@ -135,7 +153,7 @@ export default {
         {
           icon: 'cloud_download',
           label: '谱面获取',
-          separator: false,
+          separator: true,
           to: '/bdoff'
         },
         {
@@ -159,7 +177,10 @@ export default {
         '/bpm': 'BPM分析器',
         '/diff': '谱面分析',
         '/bdany': 'Bestdori数据',
-        '/kira': '谱面推荐'
+        '/kira': '谱面推荐',
+        '/sonolusUpload': 'Sonolus谱面测试',
+        '/sonolusScript': 'Sonolus脚本转换',
+        '/search': '谱面搜索'
       }
       return obj[this.$route.path]
     },
