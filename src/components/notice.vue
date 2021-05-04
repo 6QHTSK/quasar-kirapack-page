@@ -39,7 +39,7 @@
     <q-card class="notice" transition-show="jump-down">
         <q-card-section>
             <h6>版本信息</h6>
-            <p>网站版本:V0.3.0 谱面数据版本:V20.7.21</p>
+            <p>网站版本:V0.4.1 后端系统:V1.3.3</p>
         </q-card-section>
     </q-card>
   </div>

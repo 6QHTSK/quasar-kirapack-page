@@ -62,7 +62,7 @@
         <q-card style="width: 800px;max-width: 80vw">
         <q-card-section style="text-align:center">
             <h5>本站公告</h5>
-            <p>本站主要存放 <a target="_blank" href="https://space.bilibili.com/37434481">稳音绫与6QHTSK </a>
+            <p>本站主要存放 <a target="_blank" href="https://space.bilibili.com/37434481">彩绫与6QHTSK </a>
                 的一些优质BangDream谱面，且会不断更新</p>
             <p>如果长期没有更新谱面数据，欢迎私信提醒我更新</p>
             <p>未来将会添加谱面质量检测等其它功能（没有头猪）</p>
@@ -86,7 +86,7 @@
             <p>If you dont want your illustration or music be shown in this website, </p>
             <p>contact me and I will delete that. </p>
             <h6>版本信息</h6>
-            <p>网站版本:V0.4.0</p>
+            <p>网站版本:V0.5.0</p>
         </q-card-section>
         </q-card>
       </q-dialog>
@@ -129,14 +129,8 @@ export default {
         {
           icon: 'cloud_upload',
           label: 'Sonolus谱面测试',
-          separator: false,
-          to: '/sonolusUpload'
-        },
-        {
-          icon: 'sync',
-          label: 'Sonolus谱面转换',
           separator: true,
-          to: '/sonolusScript'
+          to: '/sonolusUpload'
         },
         {
           icon: 'construction',
@@ -160,8 +154,7 @@ export default {
           icon: 'calculate',
           label: 'BPM分析',
           separator: false,
-          to: '',
-          href: 'https://mikukonai.com/Tempo/'
+          to: '/tempo'
         }
       ]
     }
@@ -179,8 +172,8 @@ export default {
         '/bdany': 'Bestdori数据',
         '/kira': '谱面推荐',
         '/sonolusUpload': 'Sonolus谱面测试',
-        '/sonolusScript': 'Sonolus脚本转换',
-        '/search': '谱面搜索'
+        '/search': '谱面搜索',
+        '/tempo': 'BPM分析'
       }
       return obj[this.$route.path]
     },

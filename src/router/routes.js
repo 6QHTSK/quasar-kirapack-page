@@ -38,12 +38,12 @@ const routes = [
         component: () => import('pages/SonolusUpload.vue')
       },
       {
-        path: 'sonolusScript',
-        component: () => import('pages/SonolusScript.vue')
-      },
-      {
         path: 'search',
         component: () => import('pages/BestdoriSearch.vue')
+      },
+      {
+        path: 'tempo',
+        component: () => import('pages/tempo.vue')
       },
       {
         path: ':id(\\d+)',

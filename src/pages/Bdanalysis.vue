@@ -1,12 +1,15 @@
 <template>
-  <div>
+  <div v-if="results.chartercount != null">
     <q-card style="margin: 10px 10px 10px">
         <q-card-section style="text-align: center;">
             目前追踪中的谱师： {{results["chartercount"]}}；
             <br class="lt-sm"/>
             目前社区的谱面：{{results["chartcount"]}}；
-            <br class="xs"/>
-            有效的谱面：{{results["validchartcount"]}}；<br/>
+            <br/>
+            社区所有谱面的物量总计：{{parseNumber(results["totalNotes"])}}；
+            <br class="lt-sm"/>
+            社区所有谱面的时长总计：{{parseTime(results["totalSongLength"])}}；
+            <br/>
             数据库更新于：{{results["time"]}}
             <span class="orientation-portrait"><br/>使用电脑窗口最大化或手机横屏以获得更好体验</span>
         </q-card-section>
@@ -15,9 +18,6 @@
       <q-tabs v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary" align="justify" narrow-indicator>
         <q-tab label="查询" name="0"/>
         <q-tab label="获赞最多的谱面" name="1"/>
-        <q-tab label="时间最长的谱面" name="2"/>
-        <q-tab label="物量最多的谱面" name="3"/>
-        <q-tab label="最发狂的谱面" name="4"/>
         <q-tab label="发谱/获赞最多的谱师" class="gt-sm" name="5"/>
         <q-tab label="发谱最多的谱师" class="lt-md" name="5"/>
         <q-tab label="获赞最多的谱师" class="lt-md" name="6"/>
@@ -44,38 +44,6 @@
                     </q-select>
                 </div>
                 <q-separator v-if="searchsee"/>
-                <!--div v-if="searchsee" class="q-gutter-sm fit row wrap justify-evenly items-start" style="padding-top:20px">
-                    <q-card style="width:300px">
-                        <q-card-section style="text-align:center">
-                            <span style="font-size:large">有效谱面</span>
-                            <q-separator/>
-                            <span style="font-size:large">#{{searchres["chartcount"][0]}} / {{searchres["chartcount"][1]}}</span>
-                        </q-card-section>
-                    </q-card>
-                    <q-card style="width:300px">
-                        <q-card-section style="text-align:center">
-                            <span style="font-size:large">获赞数</span>
-                            <q-separator/>
-                            <span style="font-size:large">#{{searchres["likecount"][0]}} / {{searchres["likecount"][1]}}</span>
-                        </q-card-section>
-                    </q-card>
-                    <q-card style="width:300px">
-                        <q-card-section style="text-align:center">
-                            <span style="font-size:large">EX/SP平均难度</span>
-                            <q-separator/>
-                            <span v-if='searchres["highdiffcount"][0] < searchres["lowdiffcount"][0]' style="color:#F56C6C;font-size:large">
-                                #DESC {{searchres["highdiffcount"][0]}} / {{searchres["highdiffcount"][1].toFixed(2)}}</span>
-                            <span v-else style="color:#67C23A;font-size:large">#ASC {{searchres["lowdiffcount"][0]}} / {{searchres["lowdiffcount"][1].toFixed(2)}}</span>
-                        </q-card-section>
-                    </q-card>
-                    <q-card style="width:300px">
-                        <q-card-section style="text-align:center">
-                            <span style="font-size:large">最后更新</span>
-                            <q-separator/>
-                            <span style="font-size:large">{{searchres["lastupdate"]}}</span>
-                        </q-card-section>
-                    </q-card>
-                </div-->
                 <div v-if="searchsee" style="padding-top:20px">
                     <q-tabs v-model="tab2" dense class="text-grey" active-color="primary" indicator-color="primary" align="justify" narrow-indicator>
                         <q-tab label="基本信息" name="0"/>
@@ -97,21 +65,29 @@
                         </tr>
                         <tr>
                           <td>排名/总谱面数</td>
-                          <td>#{{searchres["chartcount"][0]}} / {{searchres["chartcount"][1]}}</td>
+                          <td>#{{searchres.chartcount.count}} / {{searchres.chartcount.sum}}</td>
                         </tr>
                         <tr>
                           <td>排名/总获赞数</td>
-                          <td>#{{searchres["likecount"][0]}} / {{searchres["likecount"][1]}}</td>
+                          <td>#{{searchres.likecount.count}} / {{searchres.likecount.sum}}</td>
+                        </tr>
+                        <tr>
+                          <td>排名/谱面物量总计</td>
+                          <td>#{{searchres.notescount.count}} / {{parseNumber(searchres.notescount.sum)}}</td>
+                        </tr>
+                        <tr>
+                          <td>排名/谱面长度总计</td>
+                          <td>#{{searchres.lengthcount.count}} / {{parseTime( searchres.lengthcount.sum)}}</td>
                         </tr>
                         <tr>
                           <td>排名/谱面难度</td>
-                          <td v-if='searchres["highdiffcount"][0] < searchres["lowdiffcount"][0]' style="color:#f56c6c">
-                                #DESC {{searchres["highdiffcount"][0]}} / {{searchres["highdiffcount"][1].toFixed(2)}}</td>
-                          <td v-else style="color:#67C23A">#ASC {{searchres["lowdiffcount"][0]}} / {{searchres["lowdiffcount"][1].toFixed(2)}}</td>
+                          <td v-if='searchres.diffcount.flag === 0' style="color:#f56c6c">
+                            #DESC {{searchres.diffcount.count}} / {{parseFloat(searchres.diffcount.average).toFixed(2)}}</td>
+                          <td v-else style="color:#67C23A">#ASC {{searchres.diffcount.count}} / {{parseFloat(searchres.diffcount.average).toFixed(2)}}</td>
                         </tr>
                         <tr>
                           <td>最后更新</td>
-                          <td>{{searchres["lastupdate"]}}</td>
+                          <td>{{searchres.lastupdate}}</td>
                         </tr>
                         </tbody>
                       </q-markup-table>
@@ -129,9 +105,9 @@
                             <tbody>
                                 <tr v-for='row in searchres["likechartcount"]' v-bind:key="row[0]">
                                     <td class="gt-xs text-center">{{row[0]}}</td>
-                                    <td class="text-center">{{row[3]}} [{{row[1]}}]</td>
-                                    <td class="gt-md text-center">{{row[4]}}</td>
-                                    <td class="gt-xs text-center">{{row[5]}}</td>
+                                    <td class="text-center">{{row[2]}} [{{row[1]}}]</td>
+                                    <td class="gt-md text-center">{{row[3]}}</td>
+                                    <td class="gt-xs text-center">{{row[4]}}</td>
                                 </tr>
                             </tbody>
                         </q-markup-table>
@@ -149,9 +125,9 @@
                             <tbody>
                                 <tr v-for='row in searchres["lastupdatechart"]' v-bind:key="row[0]">
                                     <td class="gt-xs text-center">{{row[0]}}</td>
-                                    <td class="text-center">{{row[3]}} [{{row[1]}}]</td>
-                                    <td class="gt-md text-center">{{row[4]}}</td>
-                                    <td class="gt-sm text-center">{{row[5]}}</td>
+                                    <td class="text-center">{{row[2]}} [{{row[1]}}]</td>
+                                    <td class="gt-md text-center">{{row[3]}}</td>
+                                    <td class="gt-sm text-center">{{row[4]}}</td>
                                 </tr>
                             </tbody>
                         </q-markup-table>
@@ -169,13 +145,10 @@
                             <tbody>
                                 <tr v-for='row in searchres["lencount"]' v-bind:key="row[0]">
                                     <td class="gt-xs text-center">{{row[0]}}</td>
-                                    <td class="text-center">{{row[3]}} [{{row[1]}}]</td>
-                                    <td class="gt-md text-center">{{row[4]}}</td>
+                                    <td class="text-center">{{row[2]}} [{{row[1]}}]</td>
+                                    <td class="gt-md text-center">{{row[3]}}</td>
                                     <td class="gt-xs text-center">
-                                        <span
-                                            v-if="parseInt((row[5]-60*Math.floor(row[5]/60)).toFixed(0)) >= 10">{{Math.floor(row[5]/60)}}:{{(row[5]-60*Math.floor(row[5]/60)).toFixed(0)}}</span>
-                                        <span
-                                            v-else>{{Math.floor(row[5]/60)}}:0{{(row[5]-60*Math.floor(row[5]/60)).toFixed(0)}}</span>
+                                      {{ parseTime( row[4] ) }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -194,9 +167,9 @@
                             <tbody>
                                 <tr v-for='row in searchres["npscount"]' v-bind:key="row[0]">
                                     <td class="gt-xs text-center">{{row[0]}}</td>
-                                    <td class="text-center">{{row[3]}} [{{row[1]}}]</td>
-                                    <td class="gt-md text-center">{{row[4]}}</td>
-                                    <td class="gt-xs text-center">{{row[5].toFixed(2)}}</td>
+                                    <td class="text-center">{{row[2]}} [{{row[1]}}]</td>
+                                    <td class="gt-md text-center">{{row[3]}}</td>
+                                    <td class="gt-xs text-center">{{row[4].toFixed(2)}}</td>
                                 </tr>
                             </tbody>
                         </q-markup-table>
@@ -214,9 +187,9 @@
                             <tbody>
                                 <tr v-for='row in searchres["notecount"]' v-bind:key="row[0]">
                                     <td class="gt-xs text-center">{{row[0]}}</td>
-                                    <td class="text-center">{{row[3]}} [{{row[1]}}]</td>
-                                    <td class="gt-md text-center">{{row[4]}}</td>
-                                    <td class="gt-xs text-center">{{row[5]}}</td>
+                                    <td class="text-center">{{row[2]}} [{{row[1]}}]</td>
+                                    <td class="gt-md text-center">{{row[3]}}</td>
+                                    <td class="gt-xs text-center">{{row[4]}}</td>
                                 </tr>
                             </tbody>
                         </q-markup-table>
@@ -244,86 +217,6 @@
                                 <span v-else>{{row[2]}}@{{row[1]}}</span>
                             </td>
                             <td class="gt-xs text-center">{{row[5]}}</td>
-                        </tr>
-                    </tbody>
-                </q-markup-table>
-            </q-tab-panel>
-            <q-tab-panel name="2">
-                <q-markup-table>
-                    <thead>
-                        <tr>
-                            <th class="gt-xs text-center">排名</th>
-                            <th class="text-center">曲名 [ID]</th>
-                            <th class="gt-md text-center">艺术家</th>
-                            <th class="gt-sm text-center">谱师</th>
-                            <th class="gt-xs text-center">时长</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for='(row,key) in results["longestchart"]' v-bind:key="row[0]">
-                            <td class="gt-xs text-center">{{key+1}}</td>
-                            <td class="text-center">{{row[3]}} [{{row[0]}}]</td>
-                            <td class="gt-md text-center">{{row[4]}}</td>
-                            <td class="gt-sm text-center">
-                                <span v-if="row[2]==null">{{row[1]}}</span>
-                                <span v-else>{{row[2]}}@{{row[1]}}</span>
-                            </td>
-                            <td class="gt-xs text-center">
-                                <span
-                                    v-if="parseInt((row[5]-60*Math.floor(row[5]/60)).toFixed(0)) >= 10">{{Math.floor(row[5]/60)}}:{{(row[5]-60*Math.floor(row[5]/60)).toFixed(0)}}</span>
-                                <span
-                                    v-else>{{Math.floor(row[5]/60)}}:0{{(row[5]-60*Math.floor(row[5]/60)).toFixed(0)}}</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </q-markup-table>
-            </q-tab-panel>
-            <q-tab-panel name="3">
-                <q-markup-table>
-                    <thead>
-                        <tr>
-                            <th class="gt-xs text-center">排名</th>
-                            <th class="text-center">曲名 [ID]</th>
-                            <th class="gt-md text-center">艺术家</th>
-                            <th class="gt-sm text-center">谱师</th>
-                            <th class="gt-xs text-center">物量</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for='(row,key) in results["maxnotechart"]' v-bind:key="row[0]">
-                            <td class="gt-xs text-center">{{key+1}}</td>
-                            <td class="text-center">{{row[3]}} [{{row[0]}}]</td>
-                            <td class="gt-md text-center">{{row[4]}}</td>
-                            <td class="gt-sm text-center">
-                                <span v-if="row[2]==null">{{row[1]}}</span>
-                                <span v-else>{{row[2]}}@{{row[1]}}</span>
-                            </td>
-                            <td class="gt-xs text-center">{{row[5]}}</td>
-                        </tr>
-                    </tbody>
-                </q-markup-table>
-            </q-tab-panel>
-            <q-tab-panel name="4">
-                <q-markup-table>
-                    <thead>
-                        <tr>
-                            <th class="gt-xs text-center">排名</th>
-                            <th class="text-center">曲名 [ID]</th>
-                            <th class="gt-md text-center">艺术家</th>
-                            <th class="gt-sm text-center">谱师</th>
-                            <th class="gt-xs text-center">NPS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for='(row,key) in results["highestnpschart"]' v-bind:key="row[0]">
-                            <td class="gt-xs text-center">{{key+1}}</td>
-                            <td class="text-center">{{row[3]}} [{{row[0]}}]</td>
-                            <td class="gt-md text-center">{{row[4]}}</td>
-                            <td class="gt-sm text-center">
-                                <span v-if="row[2]==null">{{row[1]}}</span>
-                                <span v-else>{{row[2]}}@{{row[1]}}</span>
-                            </td>
-                            <td class="gt-xs text-center">{{row[5].toFixed(2)}}</td>
                         </tr>
                     </tbody>
                 </q-markup-table>
@@ -408,7 +301,7 @@
                                 <span v-if="row[1]==null">{{row[0]}}</span>
                                 <span v-else>{{row[1]}}@{{row[0]}}</span>
                             </td>
-                            <td class="text-center">{{row[2].toFixed(2)}}</td>
+                            <td class="text-center">{{parseFloat(row[2]).toFixed(2)}}</td>
                         </tr>
                     </tbody>
                 </q-markup-table>
@@ -427,7 +320,7 @@
                       <span v-if="row[1]==null">{{row[0]}}</span>
                       <span v-else>{{row[1]}}@{{row[0]}}</span>
                     </td>
-                    <td class="text-center">{{row[2].toFixed(2)}}</td>
+                    <td class="text-center">{{parseFloat(row[2]).toFixed(2)}}</td>
                   </tr>
                   </tbody>
                 </q-markup-table>
@@ -449,7 +342,7 @@
                                 <span v-if="row[1]==null">{{row[0]}}</span>
                                 <span v-else>{{row[1]}}@{{row[0]}}</span>
                             </td>
-                            <td class="text-center">{{row[2].toFixed(2)}}</td>
+                            <td class="text-center">{{parseFloat(row[2]).toFixed(2)}}</td>
                         </tr>
                     </tbody>
                 </q-markup-table>
@@ -531,13 +424,10 @@ export default {
     }
   },
   methods: {
-    outputchange (e) {
-      this.outputstr = this.constoutput
-    },
     pullbdchart () {
       this.$q.loading.show()
       var vm = this
-      var url = 'https://api.ayachan.fun/calcData'
+      var url = 'https://service-lq7cn542-1300838857.gz.apigw.tencentcs.com/bestdori-analysis'
       this.$axios.get(url).then(function (res) {
         if (res.status === 200) {
           vm.results = res.data
@@ -566,14 +456,10 @@ export default {
     },
     returnuser () {
       var rtr = []
-      // console.log(this.results["usernames"])
       for (var i = 0; i < this.results.usernames.length; i++) {
         var name = this.results.usernames[i][0]
         var value = this.results.usernames[i][1] != null ? this.results.usernames[i][1] + '@' + this.results.usernames[i][0] : this.results.usernames[i][0]
-        // console.log(this.results["usernames"][i][0])
-        // if (value.toLowerCase().indexOf(queryString.toLowerCase()) !== -1) {
         rtr.push({ label: value, value: name })
-        // }
       }
       return rtr
     },
@@ -588,8 +474,8 @@ export default {
     search (username) {
       this.searchload = true
       var vm = this
-      var url = 'https://api.ayachan.fun/calcAuthor?author=' + username
-      this.$axios.get(url).then(function (res) {
+      var url = 'https://service-lq7cn542-1300838857.gz.apigw.tencentcs.com/bestdori-author-analysis'
+      this.$axios.get(url, { params: { author: username } }).then(function (res) {
         vm.searchload = false
         if (res.status === 200) {
           vm.searchres = res.data
@@ -603,6 +489,46 @@ export default {
           vm.$q.notify('拉取资源失败')
         }
       })
+    },
+    parseTime (t) {
+      if (t / 86400 > 1.0) {
+        t = (t / 3600).toFixed(0)
+        const day = Math.floor(t / 24)
+        const hour = t - day * 24
+        return day + '天' + hour + '小时'
+      }
+      let string = ''
+      const hour = Math.floor(t / 3600)
+      t -= 3600 * hour
+      if (hour !== 0) {
+        string += hour + ':'
+      }
+      const minute = Math.floor(t / 60)
+      if (hour !== 0 && minute < 10) {
+        string += '0' + minute + ':'
+      } else {
+        string += minute + ':'
+      }
+      t -= 60 * minute
+      const second = t.toFixed(0)
+      if (second < 10) {
+        string += '0' + second
+      } else {
+        string += second
+      }
+      return string
+    },
+    parseNumber (n) {
+      if (n > 10000) {
+        const tmp = (n / 10000).toFixed(1)
+        if (tmp > 100) {
+          return (n / 10000).toFixed(1) + '万'
+        } else {
+          return (n / 10000).toFixed(2) + '万'
+        }
+      } else {
+        return n
+      }
     }
   },
   mounted () {

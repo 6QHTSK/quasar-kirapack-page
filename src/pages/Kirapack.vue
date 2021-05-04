@@ -57,8 +57,8 @@
     <q-separator spaced/>
     <div class="row q-col-gutter-md wrap">
       <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" v-for="song in flitersonglist" v-bind:key="song.id">
-        <q-card style="margin-top: 8px;" class="q-hoverable shadow-transition cursor-pointer shadow-10">
-          <q-img :src="getimagesrc(song.id)" :ratio="16/9" basic @click="opendialog(song.id)">
+        <q-card style="margin-top: 8px;" class="q-hoverable shadow-transition cursor-pointer shadow-10" @click="opendialog(song.id)">
+          <q-img :src="getimagesrc(song.id)" :ratio="16/9" basic>
             <div class="absolute-full">
             </div>
             <template v-slot:loading>
@@ -66,8 +66,10 @@
             </template>
           </q-img>
           <div class="absolute-left">
-            <q-chip style="margin: 5px 10px 5px" class="text-weight-bold shadow-6">
-              {{song.id}}
+            <q-chip style="margin: 5px 5px 5px" class="text-weight-bold shadow-6">
+              <q-avatar v-if="song.charter <= 1"><img src="https://assets.ayachan.fun/charter/0.png"/></q-avatar>
+              <q-avatar v-if="song.charter >= 1"><img src="https://assets.ayachan.fun/charter/2.png"/></q-avatar>
+              <span style="text-align: center">{{song.id}}</span>
             </q-chip>
           </div>
           <div class="absolute-top-right">
@@ -80,11 +82,14 @@
             </div>
           </div>
           <div class="absolute-bottom-left" style="margin: 12px; width:100%">
-              <div class="text-white text-subtitle1 text-weight-bold ellipsis" style="margin-right: 15px">
-                <q-badge v-if="song.time >= 165" color="red">FULL</q-badge>
-                {{song.songname}}
-              </div>
-              <div class="text-white text-caption ellipsis" style="margin-right: 15px">{{song.artist}}</div>
+            <div class="text-white text-caption ellipsis text-weight-light" style="margin-right: 15px">
+              {{song.origin}}
+            </div>
+            <div class="text-white text-subtitle1 text-weight-bold ellipsis" style="margin-right: 15px">
+              <q-badge v-if="song.time >= 165" color="red">FULL</q-badge>
+              {{song.songname}}
+            </div>
+            <div class="text-white text-caption ellipsis" style="margin-right: 15px">{{song.artist}}</div>
           </div>
           <q-dialog v-model='dialogopen[song.id]'>
             <q-card style="width: 500px;max-width: 80vw">
@@ -321,7 +326,7 @@ export default {
   created () {
     var vm = this
     this.$q.loading.show()
-    this.$axios.get('https://api.ayachan.fun/songList').then(function (res) {
+    this.$axios.get('https://assets.ayachan.fun/songList.json').then(function (res) {
       if (res.status === 200) {
         vm.songlist = res.data
         var dialogopen = {}

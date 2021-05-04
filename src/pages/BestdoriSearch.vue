@@ -58,7 +58,12 @@ export default {
   methods: {
     onLoad (index, done) {
       const vm = this
-      this.$axios.get('https://api.ayachan.fun/BestdoriSearch/' + this.inputstr + '?page=' + (index - 1).toString()).then(res => {
+      this.$axios.get('https://service-lq7cn542-1300838857.gz.apigw.tencentcs.com/bestdori-search', {
+        params: {
+          keywords: this.inputstr,
+          page: (index - 1).toString()
+        }
+      }).then(res => {
         vm.items = vm.items.concat(res.data.songList)
         vm.loading = false
         if (res.data.pageCount === index) {

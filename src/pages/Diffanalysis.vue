@@ -4,6 +4,11 @@
       <div class="row q-gutter-sm justify-start" style="max-width: 900px; margin-left: 0px">
         <q-radio v-model="usingbestdori" dense :val="true" label="Bestdori" @input="clearinput"/>
         <q-radio v-model="usingbestdori" dense :val="false" label="自定义" @input="clearinput"/>
+        <q-btn class="justify-center" dense flat @click="helpDialogue = true">使用帮助</q-btn>
+        <q-dialog v-model="helpDialogue">
+          <DiffAnalysisHelp></DiffAnalysisHelp>
+          <!--chart-canvas></chart-canvas-->
+        </q-dialog>
         <q-space/>
         <q-btn :color="returncolor(diffid)" @click="clickonbutton()" :label="diffstr[diffid]" v-show="!usingbestdori" style="width:80px">
         </q-btn>
@@ -59,21 +64,6 @@
       <q-btn color="pink-4" @click="clearinput" class="full-width" v-show="showdetail">重置</q-btn>
     </div>
     <div v-if="showdetail" class="q-gutter-sm row justify-evenly wrap items-start" style="max-width:900px;margin:auto">
-      <!--q-card class="full-width">
-        <q-card-section horizontal class="justify-center">
-          <q-card-section class="col-sm-12 col-md-6 col-lg-3 text-center">
-            <span class="text-caption">{{itemList["basic"][0][0]}}</span>
-            <q-separator/>
-            <span class="text-h6">{{itemList['basic'][0][2]}}</span>
-          </q-card-section>
-          <q-card-section horizontal class="col-sm-12 col-md-6 col-lg-3 text-center">
-            <span class="text-h6"><q-icon name="speed" size="large"/>{{itemList['basic'][5][2]}}</span>
-          </q-card-section>
-          <q-card-section horizontal class="col-sm-12 col-md-6 col-lg-3 text-center">
-            <span class="text-h6"><q-icon name="music_note" size="large"/>{{itemList['basic'][1][2]}}</span>
-          </q-card-section>
-        </q-card-section>
-      </q-card-->
         <div v-for="(subject,i) in itemSubject" :key="i" class="full-width">
           <q-separator spaced/>
           <div class="text-center text-subtitle2 full-width text-weight-bold"
@@ -105,58 +95,16 @@
           </div>
         </div>
     </div>
-    <!--div class="row q-gutter-sm justify-evenly" style="padding-top:10px">
-      <q-list padding bordered class="rounded-borders" style="width: 400px;">
-        <q-expansion-item label="使用说明" default-opened>
-          <q-card>
-            <q-card-section>
-              <p>Beta 1.2.0 版，运算结果仅供参考，不代表曲目的最真实难度。</p>
-              <p>请选择正确的难度分级，否则将会造成较大的误差</p>
-              <p>量程：Easy: 5~12 Normal: 11~16 Hard: 16~23 Expert: 22~29，超出量程时显示估计值</p>
-              <p>警告：请选择正确的难度分级，否则将会造成较大的误差</p>
-              <p>如在使用过程中出现任何问题，联系作者</p>
-            </q-card-section>
-          </q-card>
-        </q-expansion-item>
-      </q-list>
-      <q-list padding bordered class="rounded-borders" style="width: 400px;">
-        <q-expansion-item label="使用方法" default-opened>
-          <q-card>
-            <q-card-section>
-              <p>自定义模式</p>
-              <p>1. 在大输入框中输入bestdori格式的谱面</p>
-              <p>2. 选择您的谱面的分级：Easy/Normal/Hard/Expert/Special，默认Expert（）</p>
-              <p>3. 点击分析按钮，即可得到分析结果</p>
-              <p>Bestdori模式</p>
-              <p>输入想要获取的bestdori谱面id，点击获取按钮，系统将会按照BD上的难度分级进行分析。</p>
-              <p>如果想要自定义等级，可以先去左边的谱面获取拉取谱面，复制到自定义模式下的大输入框内进行分析</p>
-              <p>若想分析其它谱面，点击清空，再输入新的谱面。或者在右下角的小输入框中输入新的想分析的bestdori社区谱面</p>
-            </q-card-section>
-          </q-card>
-        </q-expansion-item>
-      </q-list>
-      <q-list padding bordered class="rounded-borders" style="width: 400px;">
-        <q-expansion-item label="其它信息" default-opened>
-          <q-card>
-            <q-card-section>
-              <p>Expert难度运算结果可能与真实难度差异较大，谱面难度的精确度一般为±1级</p>
-              <p>建模的时候忽略了锁手和卡手配置影响难度的情况，若出现上述配置一般难度会偏低2~3级（加了分配手的代码也没用）</p>
-              <p>后端缓存机制已建立，如果超过15s没有提示信息/出现结果请查看F12是不是报错了，然后告诉我</p>
-              <p>定级器已开源 : </p>
-              <p><a href="https://github.com/6QHTSK/Bandori-Chart-Analysiser">github</a></p>
-              <p><a href="https://gitee.com/coppercomplex/chartdiffanalyser">gitee</a></p>
-            </q-card-section>
-          </q-card>
-        </q-expansion-item>
-      </q-list>
-
-    </div-->
   </div>
 </template>
 <script>
 // import func from 'app/vue-temp/vue-editor-bridge'
+import diffAnalysisHelp from 'components/diffAnalysisHelp'
+import chartCanvas from 'components/chartCanvas'
+
 // eslint-disable-next-line no-unused-vars
 var echarts = require('echarts')
+export { default as DiffAnalysisHelp } from 'components/diffAnalysisHelp'
 // eslint-disable-next-line no-unused-vars
 export default {
   data: function () {
@@ -180,6 +128,7 @@ export default {
       usinghelp: false,
       detail: null,
       diff: null,
+      helpDialogue: false,
       tab: 'pressure',
       itemSubject: ['basic', 'main', 'detail'],
       itemLabel: ['基础信息', '主要部分', '详细信息'],
@@ -369,6 +318,11 @@ export default {
     clickonbutton (e) {
       this.diffid = !this.onloading && !this.showdetail ? (this.diffid + 1) % 5 : this.diffid
     }
+  },
+  components: {
+    DiffAnalysisHelp: diffAnalysisHelp,
+    // eslint-disable-next-line vue/no-unused-components
+    chartCanvas: chartCanvas
   }
 }
 </script>

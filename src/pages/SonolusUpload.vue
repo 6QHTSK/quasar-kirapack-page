@@ -8,7 +8,7 @@
         测试中，可能不稳定，请合理使用
       </q-banner>
       <q-banner inline-actions class="text-white bg-primary">
-        服务器地址： test.sonolus.ayachan.fun/0.4.8/bestdori <q-btn dense flat label="点此复制" @click="copy2clipboard"></q-btn><br/>
+        服务器地址： test.sonolus.ayachan.fun/bestdori <q-btn dense flat label="点此复制" @click="copy2clipboard"></q-btn><br/>
         上传谱面资源仅保留6个小时
       </q-banner>
 
@@ -22,7 +22,7 @@
         <q-dialog v-model="uploadMusicDialog">
           <q-uploader
             style="max-width: 400px"
-            url="https://upload.ayachan.fun:24444/Sonolus"
+            url="https://service-mdom0qq6-1300838857.gz.apigw.tencentcs.com/upload"
             label="仅限10M以内 MP3格式"
             auto-upload
             max-file-size="10485760"
@@ -37,7 +37,7 @@
         <q-input type="textarea" v-model.lazy="inputstr" label="上传谱面" outlined clearable></q-input>
       </div>
       <div>
-        <q-btn color="primary" @click="upload" class="full-width" data-sitekey="6LevtjUaAAAAAHDCeyBfCYLuoHrMCFHSt3GqBSOl" :loading="loading" :disable="uploaded || !uploadFlag">
+        <q-btn color="primary" @click="upload" class="full-width" :loading="loading" :disable="uploaded || !uploadFlag">
           {{uploadLabel}}
         </q-btn>
       </div>
@@ -75,7 +75,7 @@ export default {
         } catch (err) {
           this.$q.notify('谱面错误')
         }
-        this.$axios.post('http://api.ayachan.fun/Sonolus/Upload',
+        this.$axios.post('https://api.ayachan.fun/Sonolus/Upload',
           {
             bgm: this.musicURL,
             title: this.title,
@@ -157,7 +157,7 @@ export default {
     },
     copy2clipboard () {
       var vm = this
-      copyToClipboard('test.sonolus.ayachan.fun/0.4.8/bestdori').then(() => { vm.$q.notify('已复制到剪贴版中') }).catch(() => { vm.$q.notify('复制失败') })
+      copyToClipboard('http://test.sonolus.ayachan.fun/bestdori').then(() => { vm.$q.notify('已复制到剪贴版中') }).catch(() => { vm.$q.notify('复制失败') })
     }
   },
   mounted () {
